@@ -12,17 +12,33 @@ import SocialFollow from "@/components/SocialFollow";
 
 const TOTAL_CANDIES = 25;
 const STORAGE_KEY = "bogdan_bday_candies_v1";
+const createEmptyCandies = () =>
+  Array.from({ length: TOTAL_CANDIES }, () => false);
 
 export default function Home() {
-  const [candies, setCandies] = useState<boolean[]>(() =>
-    Array.from({ length: TOTAL_CANDIES }, () => false)
-  );
+  const [candies, setCandies] = useState<boolean[]>(() => {
+    // Lazy init keeps localStorage reads out of effects (avoids sync setState).
+    if (typeof window === "undefined") {
+      return createEmptyCandies();
+    }
+    try {
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length === TOTAL_CANDIES) {
+          return parsed.map((value) => Boolean(value));
+        }
+      }
+    } catch {
+      // ignore malformed storage
+    }
+    return createEmptyCandies();
+  });
   const [isOpen, setIsOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [celebrateSignal, setCelebrateSignal] = useState(0);
   const [eatAllSignal, setEatAllSignal] = useState(0);
   const [effectsSoundEnabled, setEffectsSoundEnabled] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
 
   const timeoutsRef = useRef<number[]>([]);
   const prevAllEatenRef = useRef(false);
@@ -36,24 +52,8 @@ export default function Home() {
   const allEaten = eatenCount === TOTAL_CANDIES;
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length === TOTAL_CANDIES) {
-          setCandies(parsed.map((value) => Boolean(value)));
-        }
-      } catch {
-        // ignore malformed storage
-      }
-    }
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(candies));
-  }, [candies, hydrated]);
+  }, [candies]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsOpen(true), 600);
@@ -61,11 +61,20 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (allEaten && !prevAllEatenRef.current) {
+    if (!allEaten) {
+      prevAllEatenRef.current = false;
+      return;
+    }
+    if (prevAllEatenRef.current) return;
+    prevAllEatenRef.current = true;
+
+    // Schedule updates so we don't set state synchronously inside the effect.
+    const timer = window.setTimeout(() => {
       setCelebrateSignal((value) => value + 1);
       setToastMessage("Окей, изяде ги всичките 😄");
-    }
-    prevAllEatenRef.current = allEaten;
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [allEaten]);
 
   useEffect(() => {
@@ -105,7 +114,7 @@ export default function Home() {
 
   const handleReset = () => {
     clearEatTimeouts();
-    setCandies(Array.from({ length: TOTAL_CANDIES }, () => false));
+    setCandies(createEmptyCandies());
     localStorage.removeItem(STORAGE_KEY);
     setToastMessage("Нулирано.");
   };

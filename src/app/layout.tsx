@@ -14,6 +14,7 @@ const siteTitle = "Честит рожден ден на Богдан Лозан
 const description = "Почерпи се с бонбони и Party Night!";
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const shouldRenderAnalytics = process.env.NODE_ENV === "production";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -53,7 +54,7 @@ export default function RootLayout({
         <StyledComponentsRegistry>
           <GlobalStyle />
           {children}
-          <Analytics />
+          {shouldRenderAnalytics ? <Analytics /> : null}
         </StyledComponentsRegistry>
       </body>
     </html>
