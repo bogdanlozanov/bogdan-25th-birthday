@@ -8,6 +8,7 @@ import PartyEffects from "@/components/PartyEffects";
 import CandyBox from "@/components/CandyBox";
 import Toast from "@/components/Toast";
 import { useBiteSound } from "@/components/Sound";
+import SocialFollow from "@/components/SocialFollow";
 
 const TOTAL_CANDIES = 25;
 const STORAGE_KEY = "bogdan_bday_candies_v1";
@@ -273,9 +274,11 @@ export default function Home() {
             Да, това е мини сайт за рождения ми ден. Да, направен е за кеф.
           </Subtitle>
           <Subtitle>
-            И да, целта е проста: почерпи се с шоколадови бонбони.  
+            И да, целта е проста: почерпи се с шоколадови бонбони.
           </Subtitle>
         </Header>
+
+        <SocialFollow />
 
         <StatsRow>
           <CounterBadge>Изядени: {eatenCount} / 25</CounterBadge>
