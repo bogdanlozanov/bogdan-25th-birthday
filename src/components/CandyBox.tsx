@@ -118,7 +118,8 @@ export default function CandyBox({
 const BoxScene = styled.div`
   width: min(100%, 420px);
   margin: 0 auto;
-  padding-top: 48px;
+  padding-top: 12px;
+  padding-bottom: 12px;
   perspective: 1200px;
   transform-style: preserve-3d;
 `;
@@ -186,8 +187,13 @@ const BoxBase = styled.div`
   margin-top: calc(var(--lid-height) - var(--lid-overlap));
   padding: 22px 18px 24px;
   border-radius: 22px;
-  background: linear-gradient(165deg, rgba(40, 18, 52, 0.98), rgba(10, 8, 20, 0.98));
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    180deg,
+    rgba(40, 18, 52, 0.98) 0%,
+    rgba(18, 10, 30, 0.98) 55%,
+    rgba(10, 8, 20, 0.98) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12),
     0 30px 70px rgba(0, 0, 0, 0.55);
   overflow: visible;
@@ -211,17 +217,14 @@ const BoxBase = styled.div`
   &::after {
     content: "";
     position: absolute;
-    left: 14px;
-    right: 14px;
-    bottom: -16px;
-    height: 16px;
-    border-radius: 0 0 18px 18px;
-    background: linear-gradient(
-      180deg,
-      rgba(18, 10, 30, 0.95),
-      rgba(6, 4, 14, 0.95)
-    );
-    box-shadow: 0 18px 28px rgba(0, 0, 0, 0.45);
+    left: 16px;
+    right: 16px;
+    bottom: -6px;
+    height: 6px;
+    border-radius: 0 0 14px 14px;
+    background: rgba(6, 4, 14, 0.9);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.35);
   }
 `;
 

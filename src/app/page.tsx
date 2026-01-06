@@ -284,25 +284,6 @@ export default function Home() {
           </HintText>
         </StatsRow>
 
-        <InfoGrid>
-          <InfoCard>
-            <InfoTitle>Защо го има това?</InfoTitle>
-            <InfoText>
-              Защото мога. И защото е забавно да експериментираш с Next.js +
-              анимации.
-            </InfoText>
-            <InfoText>Малък side-project, направен просто за кеф.</InfoText>
-          </InfoCard>
-          <InfoCard>
-            <InfoTitle>Кой стои зад това?</InfoTitle>
-            <InfoText>
-              Аз съм Богдан — софтуерен инженер, който обича да си играе с AI и
-              фронтенд експерименти.
-            </InfoText>
-            <InfoText>Почерпи се и ако ти харесва — сподели.</InfoText>
-          </InfoCard>
-        </InfoGrid>
-
         <ControlsRow>
           <PrimaryButton
             type="button"
@@ -365,6 +346,27 @@ export default function Home() {
             Окей, изяде ги всичките 😄 Благодаря, че се отби! 🎂
           </AllEatenMessage>
         ) : null}
+
+        <FooterInfo>
+          <InfoGrid>
+            <InfoCard>
+              <InfoTitle>Защо го има това?</InfoTitle>
+              <InfoText>
+                Защото мога. И защото е забавно да експериментираш с Next.js +
+                анимации.
+              </InfoText>
+              <InfoText>Малък side-project, направен просто за кеф.</InfoText>
+            </InfoCard>
+            <InfoCard>
+              <InfoTitle>Кой стои зад това?</InfoTitle>
+              <InfoText>
+                Аз съм Богдан — софтуерен инженер, който обича да си играе с AI и
+                фронтенд експерименти.
+              </InfoText>
+              <InfoText>Почерпи се и ако ти харесва — сподели.</InfoText>
+            </InfoCard>
+          </InfoGrid>
+        </FooterInfo>
       </MainCard>
       <Toast message={toastMessage} />
     </PageWrap>
@@ -687,6 +689,12 @@ const HintText = styled.p`
   @media (max-width: 640px) {
     text-align: left;
   }
+`;
+
+const FooterInfo = styled.div`
+  margin-top: 4px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 `;
 
 const InfoGrid = styled.div`
