@@ -369,18 +369,16 @@ export default function Home() {
               <InfoCard>
                 <InfoTitle>Защо го има това?</InfoTitle>
                 <InfoText>
-                  Защото мога. И защото е забавно да експериментираш с Next.js +
-                  анимации.
+                  Защото мога. И защото е забавно да експериментираш с Next.js и AI инструменти.
                 </InfoText>
-                <InfoText>Малък side-project, направен просто за кеф.</InfoText>
+                <InfoText>Малък side-project, направен просто за кеф с AI за около 2 часа.</InfoText>
               </InfoCard>
               <InfoCard>
                 <InfoTitle>Кой стои зад това?</InfoTitle>
                 <InfoText>
-                  Аз съм Богдан — софтуерен инженер, който обича да си играе с AI
-                  и фронтенд експерименти.
+                  Аз съм Богдан, софтуерен инженер, който обича да програмира и да си играе с AI.
                 </InfoText>
-                <InfoText>Почерпи се и ако ти харесва — сподели.</InfoText>
+                <InfoText>Почерпи се и ако ти харесва ще се радвам да споделиш.</InfoText>
               </InfoCard>
             </InfoGrid>
           </FooterInfo>
