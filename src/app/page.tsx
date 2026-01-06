@@ -601,7 +601,7 @@ const Aurora = styled.div`
   }
 
   @media (max-width: 640px) {
-    animation: none;
+    display: none;
   }
 `;
 
@@ -616,6 +616,10 @@ const StageGlow = styled.div`
   );
   opacity: 0.6;
   filter: blur(40px);
+
+  @media (max-width: 640px) {
+    display: none;
+  }
 `;
 
 const Spotlight = styled.div`
@@ -640,8 +644,7 @@ const Spotlight = styled.div`
   }
 
   @media (max-width: 640px) {
-    animation: none;
-    opacity: 0.35;
+    display: none;
   }
 `;
 
@@ -668,8 +671,7 @@ const Haze = styled.div`
   }
 
   @media (max-width: 640px) {
-    animation: none;
-    opacity: 0.25;
+    display: none;
   }
 `;
 
@@ -686,8 +688,7 @@ const LightBlob = styled.div`
   }
 
   @media (max-width: 640px) {
-    animation: none;
-    opacity: 0.5;
+    display: none;
   }
 `;
 
@@ -714,6 +715,7 @@ const MainCard = styled(motion.section)`
   @media (max-width: 640px) {
     padding: 18px 14px 22px;
     gap: 16px;
+    backdrop-filter: none;
   }
 `;
 
