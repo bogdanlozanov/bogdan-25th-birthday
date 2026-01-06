@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import StyledComponentsRegistry from "@/lib/styled-components-registry";
 import GlobalStyle from "@/components/GlobalStyle";
 
@@ -9,23 +10,35 @@ const spaceGrotesk = Space_Grotesk({
   weight: ["400", "500", "600", "700"],
 });
 
-const description =
-  "Честит рожден ден на Богдан Лозанов. Вземи си бонбон и се забавлявай.";
+const siteTitle = "Честит рожден ден на Богдан Лозанов 🎉";
+const description = "Почерпи се с бонбони и Party Night!";
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
-  title: "Party Night — Bogdan Lozanov",
+  metadataBase: new URL(siteUrl),
+  title: siteTitle,
   description,
   openGraph: {
-    title: "Party Night — Bogdan Lozanov",
+    title: siteTitle,
     description,
     type: "website",
-    images: ["/opengraph-image"],
+    siteName: "Party Night",
+    locale: "bg_BG",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: siteTitle,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Party Night — Bogdan Lozanov",
+    title: siteTitle,
     description,
-    images: ["/twitter-image"],
+    images: ["/opengraph-image"],
   },
 };
 
@@ -40,6 +53,7 @@ export default function RootLayout({
         <StyledComponentsRegistry>
           <GlobalStyle />
           {children}
+          <Analytics />
         </StyledComponentsRegistry>
       </body>
     </html>

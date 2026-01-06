@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import confetti from "canvas-confetti";
 import { useReducedMotion } from "framer-motion";
 import styled from "styled-components";
@@ -8,6 +8,7 @@ import styled from "styled-components";
 type PartyEffectsProps = {
   celebrateSignal: number;
   eatAllSignal: number;
+  audioEnabled?: boolean;
 };
 
 const COLORS = ["#7df9ff", "#ff4fd8", "#b84bff", "#f4c95d"];
@@ -15,11 +16,60 @@ const COLORS = ["#7df9ff", "#ff4fd8", "#b84bff", "#f4c95d"];
 export default function PartyEffects({
   celebrateSignal,
   eatAllSignal,
+  audioEnabled = false,
 }: PartyEffectsProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const confettiRef = useRef<ReturnType<typeof confetti.create> | null>(null);
   const reducedMotion = useReducedMotion();
   const didInitial = useRef(false);
+  const audioRef = useRef<AudioContext | null>(null);
+  const audioEnabledRef = useRef(audioEnabled);
+
+  useEffect(() => {
+    audioEnabledRef.current = audioEnabled;
+  }, [audioEnabled]);
+
+  const playPop = useCallback(() => {
+    if (!audioEnabledRef.current) return;
+    const ctx = audioRef.current ?? new AudioContext();
+    audioRef.current = ctx;
+
+    if (ctx.state === "suspended") {
+      void ctx.resume();
+    }
+
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(520, now);
+    osc.frequency.exponentialRampToValueAtTime(180, now + 0.08);
+
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(1600, now);
+    filter.frequency.exponentialRampToValueAtTime(700, now + 0.08);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.12, now + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.12);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        void audioRef.current.close();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -43,6 +93,7 @@ export default function PartyEffects({
         colors: COLORS,
         ...options,
       });
+      playPop();
     };
 
     const timeouts: number[] = [];
@@ -97,21 +148,22 @@ export default function PartyEffects({
     return () => {
       timeouts.forEach(window.clearTimeout);
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, playPop]);
 
   useEffect(() => {
     if (!confettiRef.current || eatAllSignal === 0) return;
     const intensity = reducedMotion ? 0.45 : 0.9;
-    confettiRef.current({
-      particleCount: Math.floor(140 * intensity),
-      spread: 120,
-      startVelocity: 42,
-      gravity: 1.15,
-      colors: COLORS,
-      ticks: 240,
-      origin: { x: 0.5, y: 0.2 },
-    });
-  }, [eatAllSignal, reducedMotion]);
+      confettiRef.current({
+        particleCount: Math.floor(140 * intensity),
+        spread: 120,
+        startVelocity: 42,
+        gravity: 1.15,
+        colors: COLORS,
+        ticks: 240,
+        origin: { x: 0.5, y: 0.2 },
+      });
+      playPop();
+  }, [eatAllSignal, reducedMotion, playPop]);
 
   useEffect(() => {
     if (!confettiRef.current || celebrateSignal === 0) return;
@@ -125,7 +177,8 @@ export default function PartyEffects({
       ticks: 320,
       origin: { x: 0.5, y: 0.18 },
     });
-  }, [celebrateSignal, reducedMotion]);
+    playPop();
+  }, [celebrateSignal, reducedMotion, playPop]);
 
   useEffect(() => {
     if (!confettiRef.current) return;
@@ -144,10 +197,11 @@ export default function PartyEffects({
           y: Math.random() * 0.35 + 0.05,
         },
       });
+      playPop();
     }, reducedMotion ? 15000 : 7000);
 
     return () => window.clearInterval(interval);
-  }, [reducedMotion]);
+  }, [reducedMotion, playPop]);
 
   return <EffectsCanvas ref={canvasRef} aria-hidden="true" />;
 }

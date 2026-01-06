@@ -60,7 +60,29 @@ export default function CandyBox({
           }}
           transition={{ type: "spring", stiffness: 140, damping: 16 }}
         >
-          <LidBadge>25</LidBadge>
+          <AnimatePresence mode="wait" initial={false}>
+            {isOpen ? (
+              <LidBadge
+                key="count"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+              >
+                25
+              </LidBadge>
+            ) : (
+              <LidCaption
+                key="caption"
+                initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+              >
+                Празнувам с бомбони — вземи си!
+              </LidCaption>
+            )}
+          </AnimatePresence>
           <LidShine />
         </LidButton>
 
@@ -122,6 +144,11 @@ const BoxScene = styled.div`
   padding-bottom: 12px;
   perspective: 1200px;
   transform-style: preserve-3d;
+
+  @media (max-width: 640px) {
+    padding-top: 4px;
+    padding-bottom: 8px;
+  }
 `;
 
 const BoxWrapper = styled.div`
@@ -152,17 +179,18 @@ const LidButton = styled(motion.button)`
   will-change: transform;
   cursor: pointer;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding-top: clamp(14px, 3vw, 22px);
+  padding: 0 18px;
   color: #fef6ff;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.7rem;
   z-index: 2;
+  text-align: center;
 `;
 
-const LidBadge = styled.span`
+const LidBadge = styled(motion.span)`
   background: rgba(255, 200, 90, 0.18);
   border: 1px solid rgba(255, 200, 90, 0.6);
   padding: 6px 14px;
@@ -171,6 +199,15 @@ const LidBadge = styled.span`
   color: #f4c95d;
   text-shadow: 0 0 8px rgba(244, 201, 93, 0.6);
   backface-visibility: hidden;
+`;
+
+const LidCaption = styled(motion.span)`
+  max-width: 90%;
+  font-size: clamp(0.7rem, 1.6vw, 0.95rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #fef4ff;
+  text-shadow: 0 0 12px rgba(125, 249, 255, 0.4);
 `;
 
 const LidShine = styled.span`

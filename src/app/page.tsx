@@ -21,6 +21,7 @@ export default function Home() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [celebrateSignal, setCelebrateSignal] = useState(0);
   const [eatAllSignal, setEatAllSignal] = useState(0);
+  const [effectsSoundEnabled, setEffectsSoundEnabled] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
   const timeoutsRef = useRef<number[]>([]);
@@ -84,8 +85,13 @@ export default function Home() {
     timeoutsRef.current = [];
   };
 
-  const eatCandy = (index: number) => {
+  const registerInteraction = () => {
     unlock();
+    setEffectsSoundEnabled(true);
+  };
+
+  const eatCandy = (index: number) => {
+    registerInteraction();
     if (candies[index]) return;
 
     setCandies((prev) => {
@@ -105,7 +111,7 @@ export default function Home() {
   };
 
   const handleEatAll = () => {
-    unlock();
+    registerInteraction();
     setIsOpen(true);
     clearEatTimeouts();
 
@@ -134,7 +140,7 @@ export default function Home() {
   };
 
   const handleShare = async () => {
-    unlock();
+    registerInteraction();
     const url = window.location.href;
     const shareData = {
       title: "Party Night — Bogdan Lozanov",
@@ -161,6 +167,7 @@ export default function Home() {
   };
 
   const handleToggleMute = () => {
+    registerInteraction();
     const nextMuted = !muted;
     toggleMute();
     setToastMessage(nextMuted ? "Звукът е изключен." : "Звукът е включен.");
@@ -261,116 +268,118 @@ export default function Home() {
       <PartyEffects
         celebrateSignal={celebrateSignal}
         eatAllSignal={eatAllSignal}
+        audioEnabled={effectsSoundEnabled && !muted}
       />
-      <MainCard
-        initial={{ y: 18, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
-      >
-        <Header>
-          <Eyebrow>Party Night</Eyebrow>
-          <Title>Честит рожден ден на Богдан Лозанов 🎉</Title>
-          <Subtitle>
-            Да, това е мини сайт за рождения ми ден. Да, направен е за кеф.
-          </Subtitle>
-          <Subtitle>
-            И да, целта е проста: почерпи се с шоколадови бонбони.
-          </Subtitle>
-        </Header>
+      <ContentShell>
+        <MainCard
+          initial={{ y: 18, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
+          <Header>
+            <Eyebrow>Party Night</Eyebrow>
+            <Title>Честит рожден ден на Богдан Лозанов 🎉</Title>
+            <Subtitle>
+              Да, това е мини сайт за рождения ми ден. Да, направен е за кеф.
+            </Subtitle>
+            <Subtitle>
+              И да, целта е проста: почерпи се с шоколадови бонбони.
+            </Subtitle>
+          </Header>
 
+          <StatsRow>
+            <CounterBadge>Изядени: {eatenCount} / 25</CounterBadge>
+            <HintText>Кликни бонбон, за да го „изядеш“.</HintText>
+          </StatsRow>
+
+          <ControlsRow>
+            <PrimaryButton
+              type="button"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => {
+                registerInteraction();
+                setIsOpen((prev) => !prev);
+              }}
+            >
+              {isOpen ? "Затвори капака" : "Отвори капака"}
+            </PrimaryButton>
+            <GhostButton
+              type="button"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleEatAll}
+            >
+              Изяж всички
+            </GhostButton>
+            <GhostButton
+              type="button"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleReset}
+            >
+              Нулирай
+            </GhostButton>
+            <GhostButton
+              type="button"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleShare}
+            >
+              Сподели
+            </GhostButton>
+            <IconButton
+              type="button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleToggleMute}
+              aria-label={muted ? "Включи звук" : "Изключи звук"}
+              title={muted ? "Включи звук" : "Изключи звук"}
+            >
+              <SoundIcon muted={muted} />
+            </IconButton>
+          </ControlsRow>
+
+          <CandyArea aria-label="Кутия с бонбони">
+            <CandyBox
+              candies={candies}
+              onCandyClick={eatCandy}
+              isOpen={isOpen}
+              onToggleOpen={() => setIsOpen((prev) => !prev)}
+            />
+          </CandyArea>
+
+          {allEaten ? (
+            <AllEatenMessage>
+              Окей, изяде ги всичките 😄 Благодаря, че се отби! 🎂
+            </AllEatenMessage>
+          ) : null}
+
+          <FooterInfo>
+            <InfoGrid>
+              <InfoCard>
+                <InfoTitle>Защо го има това?</InfoTitle>
+                <InfoText>
+                  Защото мога. И защото е забавно да експериментираш с Next.js +
+                  анимации.
+                </InfoText>
+                <InfoText>Малък side-project, направен просто за кеф.</InfoText>
+              </InfoCard>
+              <InfoCard>
+                <InfoTitle>Кой стои зад това?</InfoTitle>
+                <InfoText>
+                  Аз съм Богдан — софтуерен инженер, който обича да си играе с AI
+                  и фронтенд експерименти.
+                </InfoText>
+                <InfoText>Почерпи се и ако ти харесва — сподели.</InfoText>
+              </InfoCard>
+            </InfoGrid>
+          </FooterInfo>
+        </MainCard>
+      </ContentShell>
+      <PageFooter>
         <SocialFollow />
-
-        <StatsRow>
-          <CounterBadge>Изядени: {eatenCount} / 25</CounterBadge>
-          <HintText>
-            Кликни бонбон, за да го „изядеш“.
-          </HintText>
-        </StatsRow>
-
-        <ControlsRow>
-          <PrimaryButton
-            type="button"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => {
-              unlock();
-              setIsOpen((prev) => !prev);
-            }}
-          >
-            {isOpen ? "Затвори капака" : "Отвори капака"}
-          </PrimaryButton>
-          <GhostButton
-            type="button"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={handleEatAll}
-          >
-            Изяж всички
-          </GhostButton>
-          <GhostButton
-            type="button"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={handleReset}
-          >
-            Нулирай
-          </GhostButton>
-          <GhostButton
-            type="button"
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={handleShare}
-          >
-            Сподели
-          </GhostButton>
-          <IconButton
-            type="button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleToggleMute}
-            aria-label={muted ? "Включи звук" : "Изключи звук"}
-            title={muted ? "Включи звук" : "Изключи звук"}
-          >
-            <SoundIcon muted={muted} />
-          </IconButton>
-        </ControlsRow>
-
-        <CandyArea aria-label="Кутия с бонбони">
-          <CandyBox
-            candies={candies}
-            onCandyClick={eatCandy}
-            isOpen={isOpen}
-            onToggleOpen={() => setIsOpen((prev) => !prev)}
-          />
-        </CandyArea>
-
-        {allEaten ? (
-          <AllEatenMessage>
-            Окей, изяде ги всичките 😄 Благодаря, че се отби! 🎂
-          </AllEatenMessage>
-        ) : null}
-
-        <FooterInfo>
-          <InfoGrid>
-            <InfoCard>
-              <InfoTitle>Защо го има това?</InfoTitle>
-              <InfoText>
-                Защото мога. И защото е забавно да експериментираш с Next.js +
-                анимации.
-              </InfoText>
-              <InfoText>Малък side-project, направен просто за кеф.</InfoText>
-            </InfoCard>
-            <InfoCard>
-              <InfoTitle>Кой стои зад това?</InfoTitle>
-              <InfoText>
-                Аз съм Богдан — софтуерен инженер, който обича да си играе с AI и
-                фронтенд експерименти.
-              </InfoText>
-              <InfoText>Почерпи се и ако ти харесва — сподели.</InfoText>
-            </InfoCard>
-          </InfoGrid>
-        </FooterInfo>
-      </MainCard>
+      </PageFooter>
       <Toast message={toastMessage} />
     </PageWrap>
   );
@@ -457,11 +466,39 @@ const PageWrap = styled.main`
   position: relative;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 32px 16px 64px;
+  justify-content: flex-start;
+  padding: 32px 16px 28px;
+  gap: 24px;
   overflow: hidden;
   isolation: isolate;
+
+  @media (max-width: 640px) {
+    padding: 16px 12px 20px;
+    gap: 16px;
+  }
+`;
+
+const ContentShell = styled.div`
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 640px) {
+    align-items: flex-start;
+  }
+`;
+
+const PageFooter = styled.footer`
+  width: min(100%, 980px);
+  display: flex;
+  justify-content: center;
+  padding-bottom: 8px;
+  margin-top: auto;
+  z-index: 2;
 `;
 
 const Background = styled.div`
@@ -636,12 +673,22 @@ const MainCard = styled(motion.section)`
   display: flex;
   flex-direction: column;
   gap: 24px;
+
+  @media (max-width: 640px) {
+    padding: 18px 14px 22px;
+    gap: 16px;
+  }
 `;
 
 const Header = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  @media (max-width: 640px) {
+    gap: 8px;
+    order: 1;
+  }
 `;
 
 const Eyebrow = styled.span`
@@ -672,6 +719,10 @@ const StatsRow = styled.div`
   gap: 12px;
   align-items: center;
   justify-content: space-between;
+
+  @media (max-width: 640px) {
+    order: 3;
+  }
 `;
 
 const CounterBadge = styled.div`
@@ -698,6 +749,10 @@ const FooterInfo = styled.div`
   margin-top: 4px;
   padding-top: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  @media (max-width: 640px) {
+    order: 6;
+  }
 `;
 
 const InfoGrid = styled.div`
@@ -734,6 +789,10 @@ const ControlsRow = styled.div`
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
+
+  @media (max-width: 640px) {
+    order: 4;
+  }
 `;
 
 const PrimaryButton = styled(motion.button)`
@@ -781,6 +840,11 @@ const CandyArea = styled.div`
   background: rgba(6, 8, 18, 0.6);
   border: 1px solid rgba(125, 249, 255, 0.15);
   box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.35);
+
+  @media (max-width: 640px) {
+    order: 2;
+    padding: 12px;
+  }
 `;
 
 const AllEatenMessage = styled.div`
@@ -792,4 +856,8 @@ const AllEatenMessage = styled.div`
   font-weight: 600;
   text-align: center;
   box-shadow: 0 12px 28px rgba(244, 201, 93, 0.2);
+
+  @media (max-width: 640px) {
+    order: 5;
+  }
 `;

@@ -46,7 +46,7 @@ const socials = [
 export default function SocialFollow() {
   return (
     <Wrapper aria-label="Социални мрежи">
-      <Title>Следвай ме:</Title>
+      <Title>Искаш още готини проекти и видеа? Линкове към социалните ми мрежи.👇</Title>
       <IconRow>
         {socials.map(({ label, href, Icon }) => (
           <IconLink
@@ -68,6 +68,8 @@ export default function SocialFollow() {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: 10px;
 `;
 
@@ -82,6 +84,7 @@ const IconRow = styled.div`
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
+  justify-content: center;
 `;
 
 const IconLink = styled.a`
