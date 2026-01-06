@@ -21,6 +21,10 @@ export default function PartyEffects({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const confettiRef = useRef<ReturnType<typeof confetti.create> | null>(null);
   const reducedMotion = useReducedMotion();
+  const shouldDisableEffects =
+    reducedMotion ||
+    (typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 640px), (pointer: coarse)").matches);
   const didInitial = useRef(false);
   const audioRef = useRef<AudioContext | null>(null);
   const audioEnabledRef = useRef(audioEnabled);
@@ -72,6 +76,7 @@ export default function PartyEffects({
   }, []);
 
   useEffect(() => {
+    if (shouldDisableEffects) return;
     if (!canvasRef.current) return;
     confettiRef.current = confetti.create(canvasRef.current, {
       resize: true,
@@ -81,9 +86,10 @@ export default function PartyEffects({
     return () => {
       confettiRef.current = null;
     };
-  }, []);
+  }, [shouldDisableEffects]);
 
   useEffect(() => {
+    if (shouldDisableEffects) return;
     if (!confettiRef.current || didInitial.current) return;
     didInitial.current = true;
 
@@ -148,9 +154,10 @@ export default function PartyEffects({
     return () => {
       timeouts.forEach(window.clearTimeout);
     };
-  }, [reducedMotion, playPop]);
+  }, [reducedMotion, playPop, shouldDisableEffects]);
 
   useEffect(() => {
+    if (shouldDisableEffects) return;
     if (!confettiRef.current || eatAllSignal === 0) return;
     const intensity = reducedMotion ? 0.45 : 0.9;
       confettiRef.current({
@@ -163,9 +170,10 @@ export default function PartyEffects({
         origin: { x: 0.5, y: 0.2 },
       });
       playPop();
-  }, [eatAllSignal, reducedMotion, playPop]);
+  }, [eatAllSignal, reducedMotion, playPop, shouldDisableEffects]);
 
   useEffect(() => {
+    if (shouldDisableEffects) return;
     if (!confettiRef.current || celebrateSignal === 0) return;
     const intensity = reducedMotion ? 0.55 : 1.15;
     confettiRef.current({
@@ -178,9 +186,10 @@ export default function PartyEffects({
       origin: { x: 0.5, y: 0.18 },
     });
     playPop();
-  }, [celebrateSignal, reducedMotion, playPop]);
+  }, [celebrateSignal, reducedMotion, playPop, shouldDisableEffects]);
 
   useEffect(() => {
+    if (shouldDisableEffects) return;
     if (!confettiRef.current) return;
     const interval = window.setInterval(() => {
       if (document.hidden) return;
@@ -201,7 +210,7 @@ export default function PartyEffects({
     }, reducedMotion ? 15000 : 7000);
 
     return () => window.clearInterval(interval);
-  }, [reducedMotion, playPop]);
+  }, [reducedMotion, playPop, shouldDisableEffects]);
 
   return <EffectsCanvas ref={canvasRef} aria-hidden="true" />;
 }
@@ -213,4 +222,8 @@ const EffectsCanvas = styled.canvas`
   height: 100%;
   pointer-events: none;
   z-index: 0;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
 `;

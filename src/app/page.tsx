@@ -570,6 +570,15 @@ const Background = styled.div`
       animation: none;
     }
   }
+
+  @media (max-width: 640px) {
+    position: absolute;
+
+    &::before,
+    &::after {
+      animation: none;
+    }
+  }
 `;
 
 const Aurora = styled.div`
@@ -588,6 +597,10 @@ const Aurora = styled.div`
   animation: ${spin} 40s linear infinite;
 
   @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
+  @media (max-width: 640px) {
     animation: none;
   }
 `;
@@ -625,6 +638,11 @@ const Spotlight = styled.div`
     animation: none;
     opacity: 0.3;
   }
+
+  @media (max-width: 640px) {
+    animation: none;
+    opacity: 0.35;
+  }
 `;
 
 const Haze = styled.div`
@@ -648,6 +666,11 @@ const Haze = styled.div`
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
+
+  @media (max-width: 640px) {
+    animation: none;
+    opacity: 0.25;
+  }
 `;
 
 const LightBlob = styled.div`
@@ -660,6 +683,11 @@ const LightBlob = styled.div`
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
+  }
+
+  @media (max-width: 640px) {
+    animation: none;
+    opacity: 0.5;
   }
 `;
 
