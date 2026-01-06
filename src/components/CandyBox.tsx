@@ -79,7 +79,7 @@ export default function CandyBox({
                 exit={{ opacity: 0, y: 6, scale: 0.98 }}
                 transition={{ duration: 0.25, ease: "easeOut" }}
               >
-                Празнувам с бомбони — вземи си!
+                Вземи си бонбонче
               </LidCaption>
             )}
           </AnimatePresence>
