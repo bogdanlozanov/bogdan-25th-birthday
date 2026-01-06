@@ -273,7 +273,7 @@ export default function Home() {
             Да, това е мини сайт за рождения ми ден. Да, направен е за кеф.
           </Subtitle>
           <Subtitle>
-            И да, целта е проста: почерпи се с шоколадови бонбони.
+            И да, целта е проста: почерпи се с шоколадови бонбони.  
           </Subtitle>
         </Header>
 
@@ -615,7 +615,7 @@ const LightBlob = styled.div`
 const MainCard = styled(motion.section)`
   position: relative;
   z-index: 2;
-  width: min(100%, 980px);
+  width: min(100%, 1200px);
   background: linear-gradient(
     160deg,
     rgba(14, 18, 34, 0.82),

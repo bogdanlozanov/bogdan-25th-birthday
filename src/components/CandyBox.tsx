@@ -120,20 +120,21 @@ const BoxScene = styled.div`
   margin: 0 auto;
   padding-top: 48px;
   perspective: 1200px;
+  transform-style: preserve-3d;
 `;
 
 const BoxWrapper = styled.div`
   position: relative;
   transform-style: preserve-3d;
-  --lid-height: 110px;
-  --lid-overlap: 38px;
+  width: 100%;
+  --lid-height: calc(100% + 6px);
+  --lid-overlap: var(--lid-height);
 `;
 
 const LidButton = styled(motion.button)`
   position: absolute;
-  left: -1px;
-  right: -1px;
-  top: 0;
+  inset: 0 0 auto 0;
+  width: 100%;
   height: var(--lid-height);
   border-radius: 22px;
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -145,10 +146,14 @@ const LidButton = styled(motion.button)`
   box-shadow: 0 22px 50px rgba(0, 0, 0, 0.45);
   transform-origin: 50% 0%;
   transform-style: preserve-3d;
+  backface-visibility: hidden;
+  box-sizing: border-box;
+  will-change: transform;
   cursor: pointer;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  padding-top: clamp(14px, 3vw, 22px);
   color: #fef6ff;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -164,6 +169,7 @@ const LidBadge = styled.span`
   font-weight: 600;
   color: #f4c95d;
   text-shadow: 0 0 8px rgba(244, 201, 93, 0.6);
+  backface-visibility: hidden;
 `;
 
 const LidShine = styled.span`
@@ -172,6 +178,7 @@ const LidShine = styled.span`
   border-radius: 14px;
   background: linear-gradient(130deg, rgba(255, 255, 255, 0.2), transparent 60%);
   pointer-events: none;
+  backface-visibility: hidden;
 `;
 
 const BoxBase = styled.div`
@@ -184,6 +191,8 @@ const BoxBase = styled.div`
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12),
     0 30px 70px rgba(0, 0, 0, 0.55);
   overflow: visible;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 
   &::before {
     content: "";
